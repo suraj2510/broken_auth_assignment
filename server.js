@@ -6,7 +6,7 @@ const authMiddleware = require("./middleware/auth");
 const { generateToken } = require("./utils/tokenGenerator");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 // Session storage (in-memory)
 const loginSessions = {};
@@ -15,6 +15,7 @@ const otpStore = {};
 // Middleware
 app.use(requestLogger);
 app.use(express.json());
+app.use(cookieParser())
 
 
 app.get("/", (req, res) => {
@@ -49,7 +50,7 @@ app.post("/auth/login", (req, res) => {
     // Store OTP
     otpStore[loginSessionId] = otp;
 
-    console.log(`[OTP] Session ${loginSessionId} generated`);
+console.log(`[OTP] Session ${loginSessionId} generated. OTP: ${otp}`);
 
     return res.status(200).json({
       message: "OTP sent",
