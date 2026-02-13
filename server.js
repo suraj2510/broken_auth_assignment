@@ -37,8 +37,7 @@ app.post("/auth/login", (req, res) => {
 
     // Generate session and OTP
     const loginSessionId = Math.random().toString(36).substring(7);
-    const otp = Math.floor(100000 + Math.random() * 900000); // 6-digit OTP
-
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
     // Store session with 2-minute expiry
     loginSessions[loginSessionId] = {
       email,
@@ -64,6 +63,7 @@ console.log(`[OTP] Session ${loginSessionId} generated. OTP: ${otp}`);
   }
 });
 
+//chnage 2: Fix OTP Verification
 app.post("/auth/verify-otp", (req, res) => {
   try {
     const { loginSessionId, otp } = req.body;
@@ -84,7 +84,7 @@ app.post("/auth/verify-otp", (req, res) => {
       return res.status(401).json({ error: "Session expired" });
     }
 
-    if (parseInt(otp) !== otpStore[loginSessionId]) {
+    if (otp !== otpStore[loginSessionId]) {
       return res.status(401).json({ error: "Invalid OTP" });
     }
 
@@ -108,6 +108,7 @@ app.post("/auth/verify-otp", (req, res) => {
   }
 });
 
+//chnage 3: Fix Token Generation
 app.post("/auth/token", (req, res) => {
   try {
     const token = req.headers.authorization;
@@ -150,6 +151,7 @@ app.post("/auth/token", (req, res) => {
   }
 });
 
+//change 4: Fix Protected Route Access
 // Protected route example
 app.get("/protected", authMiddleware, (req, res) => {
   return res.json({
